@@ -1,18 +1,3 @@
-
-/*****************
-
-Title of Project
-Author Name
-
-This is a template. You must fill in the title,
-author, and this description to match your project!
-
-******************/
-
-// preload()
-//
-// Description of preload
-
 let states = {
   Wait: 1,
   Play: 2,
@@ -29,7 +14,6 @@ let avatar = {
   color: '#a8cc3d',
   alive: true
 }
-
 
 let food = {
   x: 0,
@@ -62,10 +46,6 @@ function preload() {
 
 }
 
-
-// setup()
-//
-// Description of setup
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
