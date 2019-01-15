@@ -203,7 +203,7 @@ function displayFood(){
   }
 
   if (food.y + food.size/2 < 0){
-    food.y = width + food.size/2;
+    food.y = height + food.size/2;
     food.x = width - food.x;
   } else if (food.y - food.size/2 > height){
     food.y = 0 - food.size/2;
