@@ -36,24 +36,26 @@ class Agent {
     else
       return false;
   }
+
+  reset(){
+    this.active = true;
+  }
 }
 
 class Avatar extends Agent{
   constructor(position, size, color){
     super(position, size, color);
-    this.maxSize = size;
+    this.initialColor = this.color;
   }
 
   update(){
+    if (!this.active)
+      return;
+
     let dx = mouseX - this.position.x;
     let dy = mouseY - this.position.y;
     this.position.x += dx * EASING;
     this.position.y += dy * EASING;
-
-    //avatar.size -= DAMAGE;
-    avatar.size = constrain(avatar.size, 0, avatar.maxSize);
-    if (avatar.size === 0)
-      avatar.active = false;
 
     avatar.position.x = constrain(avatar.position.x, 0 + avatar.size/2, width - avatar.size/2);
     avatar.position.y = constrain(avatar.position.y, 0 + avatar.size/2, height - avatar.size/2);
@@ -70,9 +72,7 @@ class Avatar extends Agent{
     pop();
   }
 
-  grow(amount){
-    avatar.size += amount;
-
+  gain(){
     switch (this.state){
       case 0:
         let g = green(avatar.color);
@@ -94,9 +94,18 @@ class Avatar extends Agent{
         }
         break;
       case 2:
-        console.log("You win!");
+        gameWon();
         break;
     }
+
+  }
+
+  reset(){
+    super.reset();
+    this.state = 0;
+    this.position.x = width/2;
+    this.position.y = height/2;
+    this.color = color(red(this.initialColor), green(this.initialColor), blue(this.initialColor));
 
   }
 }
@@ -113,7 +122,8 @@ class Collectible extends Agent{
   }
 
   update(){
-    super.update();
+    if (!this.active)
+      return;
 
     //velocity stuff
     this.position.x += this.velocity.x;
@@ -169,6 +179,7 @@ class Collectible extends Agent{
   }
 
   reset(){
+    super.reset();
     this.position.x = random(width);
     this.position.y = random(height);
     this.velocity.x = random (-MAX_VELOCITY, MAX_VELOCITY);
