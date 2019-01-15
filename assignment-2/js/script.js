@@ -12,7 +12,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noCursor();
 
-  avatar = new Avatar(createVector(width/2, height/2), 64, color('#a8cc3d'));
+  avatar = new Avatar(createVector(width/2, height/2), 36, color(190, 0, 0));
   agents.push(avatar);
 
   for (let i=0; i<NB_OF_COINS; i++){
@@ -28,15 +28,16 @@ function draw() {
    agents[i].update();
    agents[i].display();
 
+   //If we're the avatar, let's check for overlap
+   //with the other objects
    if (agents[i] === avatar){
      for (let j=1;j<agents.length;j++){
        if (avatar.overlap(agents[j])){
          avatar.grow(agents[j].size);
          agents[j].reset();
-
        }
-
      }
    }
+
  }
 }

@@ -1,8 +1,10 @@
 const MAX_VELOCITY = 10;
 const MIN_SIZE = 6;
 const MAX_SIZE = 42;
-const DAMAGE = 0.2;
+
+//const DAMAGE = 0.2;
 const EASING = 0.05;
+const COLOR_GAIN = 15;
 
 class Agent {
   constructor(position, size, color){
@@ -10,6 +12,7 @@ class Agent {
     this.size = size;
     this.color = color;
     this.active = true;
+    this.state = 0;
   }
 
   update(){
@@ -47,7 +50,7 @@ class Avatar extends Agent{
     this.position.x += dx * EASING;
     this.position.y += dy * EASING;
 
-    avatar.size -= DAMAGE;
+    //avatar.size -= DAMAGE;
     avatar.size = constrain(avatar.size, 0, avatar.maxSize);
     if (avatar.size === 0)
       avatar.active = false;
@@ -67,8 +70,34 @@ class Avatar extends Agent{
     pop();
   }
 
-  grow(growthNb){
-    avatar.size += growthNb;
+  grow(amount){
+    avatar.size += amount;
+
+    switch (this.state){
+      case 0:
+        let g = green(avatar.color);
+        g += COLOR_GAIN;
+        console.log(g);
+        //avatar.color = lerpColor(avatar.color, color(190, 190, 0), EASING * 5);
+        avatar.color = color(red(avatar.color), g, 0);
+        if (g >= 190){
+          this.state++;
+        }
+        break;
+      case 1:
+        let r = red(avatar.color);
+        r -= COLOR_GAIN;
+
+        avatar.color = color(r, green(avatar.color), 0);
+        if (r <= 0){
+          this.state++;
+        }
+        break;
+      case 2:
+        console.log("You win!");
+        break;
+    }
+
   }
 }
 
