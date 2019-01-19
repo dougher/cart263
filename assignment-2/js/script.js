@@ -1,5 +1,10 @@
 "use strict";
+
 const NB_OF_COINS = 5;
+const TIME_OFFSET = 50;
+const TIME_TO_WAIT = 60;
+
+let countdown = 30;
 
 let avatar;
 let agents = [];
@@ -12,6 +17,7 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noCursor();
+  textSize(36);
 
   avatar = new Avatar(createVector(width/2, height/2), 36, color(190, 0, 0));
   agents.push(avatar);
@@ -25,6 +31,20 @@ function setup() {
 
 function draw() {
   background(0);
+
+  if (countdown <= 0){
+    DeactivateAgents();
+    //console.log("You lost sucka!");
+    fill(255);
+    textAlign(CENTER);
+    text("Time's up! Game over.\nPress any key to restart...", width/2, height/2);
+  } else {
+    if (frameCount % TIME_TO_WAIT === 0 && !win){
+       countdown--;
+    }
+  }
+
+  //Cycle through the agents, update an display them.
   for (let i=0;i<agents.length;i++){
    agents[i].update();
    agents[i].display();
@@ -38,34 +58,43 @@ function draw() {
 
          if (avatar.state < 2)
           agents[j].reset();
-       }
      }
    }
 
  }
 
  if (win){
-   textSize(36);
+   fill(255);
    textAlign(CENTER);
    text("You've won the game! Congrats :)))\nPress any key to restart...", width/2, height/2);
  }
+
+ fill(255);
+ textAlign(LEFT);
+ text(countdown, TIME_OFFSET, TIME_OFFSET);
+
 }
 
-function gameWon(){
+function GameWon(){
   if (!win){
     win = true;
 
-    for (let i=0;i<agents.length;i++){
-      agents[i].active = false;
-    }
+    DeactivateAgents();
+  }
+}
+
+function DeactivateAgents(){
+  for (let i=0;i<agents.length;i++){
+    agents[i].active = false;
   }
 }
 
 function keyPressed(){
-  if (win){
+  if (win || countdown <= 0){
     resetAll();
     win = false;
     background(0);
+    countdown = 30;
   }
 }
 

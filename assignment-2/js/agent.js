@@ -1,5 +1,5 @@
 const MAX_VELOCITY = 10;
-const MIN_SIZE = 6;
+const MIN_SIZE = 12;
 const MAX_SIZE = 42;
 
 //const DAMAGE = 0.2;
@@ -94,7 +94,7 @@ class Avatar extends Agent{
         }
         break;
       case 2:
-        gameWon();
+        GameWon();
         break;
     }
 
