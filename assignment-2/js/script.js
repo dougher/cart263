@@ -58,6 +58,7 @@ function draw() {
 
          if (avatar.state < 2)
           agents[j].reset();
+        }
      }
    }
 
