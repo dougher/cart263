@@ -1,0 +1,35 @@
+/*********************************************
+
+Here is a description of any special CSS used.
+In this case it's just padding and margin to 0
+so the canvas is flush with the top left corner.
+
+**********************************************/
+
+body {
+  font-family: Courier, monospace;
+  width: 800px;
+  margin-left: 100px;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.redacted {
+  background-color: black;
+  color: transparent;
+}
+
+.unbonus {
+  background-color: black;
+  color: transparent;
+}
+
+.revealed {
+  background-color: transparent;
+  color: red;
+}
+
+.bonus {
+  background-color: yellow;
+  color: white;
+}
