@@ -16,7 +16,8 @@ class Agent {
   }
 
   update(){
-
+    if (!this.active)
+      return;
   }
 
   display(){
@@ -49,8 +50,7 @@ class Avatar extends Agent{
   }
 
   update(){
-    if (!this.active)
-      return;
+    super.update();
 
     let dx = mouseX - this.position.x;
     let dy = mouseY - this.position.y;
