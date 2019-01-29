@@ -1,12 +1,5 @@
-/*********************************************
-
-Here is a description of any special CSS used.
-In this case it's just padding and margin to 0
-so the canvas is flush with the top left corner.
-
-**********************************************/
-
 body {
+  float: center;
   width: 800px;
   margin-left: 100px;
   margin-bottom: 20px;
@@ -14,9 +7,16 @@ body {
 }
 
 .bubble {
-  margin: auto;
-  background-color: #ccffff;
-  border-color: #5f5f5f;
+  float: left;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  background: #ccffff;
+  width: 35px;
+  height: 15%;
+  border: 2px;
+  padding: 2%;
+
+  border-color: #000000;
   border-radius: 25px;
-  width: 33%;
+  border-width: 2px;
 }
