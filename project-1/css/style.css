@@ -4,15 +4,17 @@ body {
   margin-left: 100px;
   margin-bottom: 20px;
   font-size: 1.5em;
+  overflow: hidden;
 }
 
 .bubble {
+  position: fixed;
   float: left;
   margin-right: 5px;
   margin-bottom: 5px;
   background: #ccffff;
-  width: 35px;
-  height: 15%;
+  width: 45px;
+  height: 30px;
   border: 2px;
   padding: 2%;
 

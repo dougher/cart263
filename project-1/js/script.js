@@ -1,23 +1,30 @@
-let nbOfBonuses = 0;
-let bonusFound = 0;
+//let bubbles = [];
 
 $(document).ready(function(){
-  $('#restart').hide();
-  nbOfBonuses = $('.unbonus').length;
-  setInterval(update, 500);
-
-  $('.redacted').on('click', spanClicked);
-  $('.unbonus').hover(bonusRevealed);
+  setInterval(update, 2000);
 });
 
 function update(){
+  let xpos = Math.random() * innerWidth;
 
-  if ($('.redacted').length === 0){
-      //console.log("Game over!");
-      $('.revealed').each(spanOff);
-      $('.unbonus').each(bonusOff);
-      $('#restart').fadeIn().on('click', reset);
-  }
-  else
-    $('span').each(spanUpdate);
+  let b = $('<div></div>');
+  b.attr('class', 'bubble');
+  b.offset({
+    'top': innerHeight,
+    'left': xpos
+  });
+
+  let end = - parseInt(b.css('height')) * 2.5;
+  console.log(xpos + " " + innerHeight);
+  b.animate({
+    'top': end
+  }, 8000, function(){
+    this.remove();
+  });
+
+  $('body').append(b);
+
+  //bubbles.push(b);
+
+
 }
