@@ -22,3 +22,15 @@ body {
   border-radius: 25px;
   border-width: 2px;
 }
+
+#mooncake {
+  max-width: 100%;
+  max-height: 100%;
+
+  width: 100%;
+  height: auto;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+}
