@@ -3,8 +3,23 @@ body {
   width: 800px;
   margin-left: 100px;
   margin-bottom: 20px;
-  font-size: 1.5em;
-  overflow: hidden;
+  font-size: 1.1em;
+  overflow: hidden; /*Make sure the page doesn't get stretched out */
+
+}
+
+#mooncake {
+  /*(max)-width make sure the image can be stretched
+  to the window's current size.*/
+  max-width: 100%;
+  max-height: 100%;
+
+  width: 100%;
+  height: auto;
+
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .bubble {
@@ -21,16 +36,7 @@ body {
   border-color: #000000;
   border-radius: 25px;
   border-width: 2px;
-}
 
-#mooncake {
-  max-width: 100%;
-  max-height: 100%;
-
-  width: 100%;
-  height: auto;
-
-  position: fixed;
-  top: 0;
-  left: 0;
+  color: grey;
+  text-align: left;
 }

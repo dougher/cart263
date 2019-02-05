@@ -1,5 +1,6 @@
 let $mouth;
 let $fly;
+let $choco;
 
 let maxChew = Math.random() * 30;
 let currChew = 0;
@@ -19,6 +20,7 @@ $(document).ready(function(){
 
   $mouth = $('#mouth');
   $fly = $('#fly');
+  $choco = $('#chocolate');
 
   $fly.draggable({
     start: function(event, ui){
