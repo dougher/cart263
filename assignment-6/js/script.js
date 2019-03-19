@@ -8,7 +8,7 @@ let dictionary;
 
 let description;
 
-let $reset;
+let $reload;
 
 $(document).ready(function (){
   $.getJSON('data/file.json', dataLoaded);
@@ -43,21 +43,35 @@ function LoadNewText(){
 
   $('.container').append(text);
 
-  CreateResetButton();
+  CreateButtons();
 }
 
-function CreateResetButton(){
+function CreateButtons(){
+  let $reload = $('<div></div>');
   let $reset = $('<div></div>');
 
-  $reset.text("Reload").button();
+  $reload.text("Reload").button();
+  $reset.text("Reset").button();
 
-  $reset.on('click', function(){
+  $reload.on('click', function(){
     description = "";
     LoadNewText();
+    $reset.remove();
     this.remove();
   });
 
+  $reset.on('click', function(){
+   $('.container').empty();
+
+    $reload.remove();
+    this.remove();
+
+    CreateButtons();
+  });
+
+  $('.container').append($reload);
   $('.container').append($reset);
+
 }
 
 function getRandomElement(currentArray){
