@@ -26,7 +26,7 @@ function LoadNewText(){
   let room = getRandomElement(dictionary.rooms);
   let deity = getRandomElement(dictionary.greek[Math.floor(Math.random(dictionary.greek.length))]);
 
-  console.log(cat + condiment + room + deity);
+  //console.log(cat + condiment + room + deity);
 
   if (condiment.charAt(condiment.length-1) === 's'){
     verb = "are";
