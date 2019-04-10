@@ -1,9 +1,8 @@
 "use strict";
 
-var DREW_WIDTH = 32;
-var DREW_HEIGHT = 28;
-var VELOCITY = 300;
-var JUMP = -250;
+var SPRITE_WIDTH = 32;
+var SPRITE_HEIGHT = 28;
+var NUM_OF_MONSTERS = 1;
 
 var config = {
   type: Phaser.AUTO,
@@ -13,7 +12,7 @@ var config = {
     default: 'arcade',
     arcade: {
       gravity: {y: 600},
-      debug: true
+      debug: false
     }
   },
   scene : {
@@ -43,21 +42,21 @@ function preload() {
   this.load.image('ground', 'assets/images/platform.png');
 
   this.load.spritesheet('idle', 'assets/images/silhouette_idle.png',
-                      {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                      {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('idle-combat', 'assets/images/silhouette_idlecombat.png',
-                                          {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                                          {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('run', 'assets/images/silhouette_run.png',
-                      {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                      {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('jump', 'assets/images/silhouette_jump.png',
-                                          {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                                          {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('hit1', 'assets/images/silhouette_hit1.png',
-                      {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                      {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('hit2', 'assets/images/silhouette_hit2.png',
-                      {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                      {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('cwalker_idle', 'assets/images/cubistwalker_idle.png',
-                      {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                      {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
   this.load.spritesheet('cwalker_hurt', 'assets/images/cubistwalker_hurt.png',
-                      {frameWidth: DREW_WIDTH, frameHeight:DREW_HEIGHT});
+                      {frameWidth: SPRITE_WIDTH, frameHeight:SPRITE_HEIGHT});
 }
 
 
@@ -80,106 +79,30 @@ function create() {
   platforms.create(750, 220, 'ground');
 
   //
-  // DREW ANIMATIONS
-  //
+  // We create Drew has his own Phaser class (extending Physics.Arcade.Sprite)
+  drew = new Drew(this, 100, 450, 'idle');
 
-  drew = this.physics.add.sprite(100, 450, 'idle').setScale(2);
-  drew.body.height = 100;
+  this.physics.add.existing(drew);
+  this.add.existing(drew);
+  drew.create();
 
-  drew.setBounce(0.2);
-  drew.setCollideWorldBounds(true);
+  // Animations for cubist walker.
 
-  this.anims.create({
-    key: 'idle',
-    frames:
-    this.anims.generateFrameNumbers('idle', {start: 0, end:3}),
-    frameRate: 9,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'idle-combat',
-    frames:
-    this.anims.generateFrameNumbers('idle-combat', {start: 0, end:3}),
-    frameRate: 12 ,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'run',
-    frames:
-    this.anims.generateFrameNumbers('run', {start: 0, end:6}),
-    frameRate: 12,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'crouch',
-    frames:
-    this.anims.generateFrameNumbers('jump', {start:0, end:0}),
-    frameRate: 1
-  });
-
-  this.anims.create({
-    key: 'jump',
-    frames:
-    this.anims.generateFrameNumbers('jump', {start: 1, end:7}),
-    frameRate: 11
-  });
-
-  this.anims.create({
-    key: 'hit1',
-    frames:
-    this.anims.generateFrameNumbers('hit1', {start: 0, end:5}),
-    frameRate: 24
-  });
-
-  this.anims.create({
-    key: 'hit2',
-    frames:
-    this.anims.generateFrameNumbers('hit2', {start: 0, end:5}),
-    frameRate: 24
-  });
-
-  drew.on('animationcomplete', function(animation, frame){
-    switch (animation.key){
-      case "crouch":
-        jumping = true;
-        drew.setVelocityY(JUMP);
-        //console.log("Done crouching");
-        break;
-      case "hit1":
-        combos--;
-        currentCombo = combos;
-        if (combos === 0)
-          hitting = false;
-        break;
-      case "hit2":
-        combos--;
-        currentCombo = combos;
-        if (combos === 0)
-          hitting = false;
-        break;
-    }
-  }, this);
-
-  // CUBIST WALKER
-
-  enemies = this.physics.add.group({
+  enemies = this.physics.add.group({ // VERSION WITH ONE STATIC ENEMY FOR GRAPHICS TESTS
     key: 'cwalker_idle',
-    repeat: 6,
-    setXY: {x:12, y:0, stepX:140}
+    repeat: NUM_OF_MONSTERS - 1,
+    setXY: {x:250, y:450, stepX:this.cameras.main.width/NUM_OF_MONSTERS}
   });
 
-  Phaser.Actions.Call(enemies.getChildren(), function(enemy){
-    enemy.speed = Math.random() * 2 + 1;
-  }, this);
+  // enemies = this.physics.add.group({
+  //   key: 'cwalker_idle',
+  //   repeat: NUM_OF_MONSTERS - 1,
+  //   setXY: {x:12, y:0, stepX:this.cameras.main.width/NUM_OF_MONSTERS}
+  // });
 
-  Phaser.Actions.ScaleXY(enemies.getChildren(), 0.5, 0.5);
-
-  this.physics.add.collider(drew, platforms);
-  this.physics.add.collider(enemies, platforms);
-  this.physics.add.overlap(drew, enemies, collisionHandler, null, this);
+  // Phaser.Actions.Call(enemies.getChildren(), function(enemy){
+  //   enemy.speed = Math.random() * 2 + 1;
+  // }, this);
 
   this.anims.create({
     key: 'cw_idle',
@@ -195,77 +118,8 @@ function create() {
     frameRate: 2
   });
 
-
-}
-
-function update() {
-
-  // DREW STUFF
-
-  if (!jumping && !hitting){
-    //console.log(jumping);
-    if (cursors.left.isDown){
-      drew.setVelocityX(-VELOCITY);
-      drew.flipX = true;
-      drew.anims.play('run', true);
-    } else if (cursors.right.isDown){
-      drew.flipX = false;
-      drew.setVelocityX(VELOCITY);
-      drew.anims.play('run', true);
-    } else {
-      drew.setVelocityX(0);
-      drew.anims.play('idle', true);
-      //console.log("Setting to idle");
-    }
-  } else if (hitting && !jumping){
-    if (currentCombo % 2 == 0)
-      drew.anims.play('hit1', true);
-    else
-      drew.anims.play('hit2', true);
-
-  } else {
-    drew.anims.play('jump', true);
-
-    if (drew.body.touching.down){
-      jumping = false;
-    }
-  }
-
-  if (cursors.up.isDown && drew.body.touching.down && !jumping){
-    drew.anims.play('crouch', true);
-  }
-
-  if (Phaser.Input.Keyboard.JustDown(hitButton)){
-    if (!hitting)
-      hitting = true;
-
-    combos++;
-    console.log(combos);
-  }
-
-  if (combos < 0)
-    combos = 0;
-
-  // ENEMIES STUFF
-
   let enemiesArray = enemies.getChildren();
-
   for (let i = 0; i < enemiesArray.length;  i++){
-    if (enemiesArray[i].speed > 0 )
-      enemiesArray[i].flipX = true;
-    else
-      enemiesArray[i].flipX = false;
-
-    enemiesArray[i].x += enemiesArray[i].speed;
-
-    if (enemiesArray[i].x >= this.cameras.main.width){
-      enemiesArray[i].speed *= -1;
-    }
-    else if (enemiesArray[i].x <= 0){
-      enemiesArray[i].speed *= -1;
-    }
-
-
     enemiesArray[i].on('animationcomplete', function(animation, frame){
       switch (animation.key){
         case "cw_hurt":
@@ -276,12 +130,52 @@ function update() {
     }, this);
   }
 
+  Phaser.Actions.ScaleXY(enemies.getChildren(), 0.5, 0.5);
+
+  this.physics.add.collider(drew, platforms);
+  this.physics.add.collider(enemies, platforms);
+  this.physics.add.overlap(drew, enemies, collisionHandler, null, this);
+
+  this.graphics = this.add.graphics();
+  this.graphics.depth = 1;
+}
+
+function update() {
+
+  drew.update(cursors, hitButton);
+
+  // ENEMIES STUFF
+
+  let enemiesArray = enemies.getChildren();
+
+  // for (let i = 0; i < enemiesArray.length;  i++){
+  //   if (enemiesArray[i].speed > 0 )
+  //     enemiesArray[i].flipX = true;
+  //   else
+  //     enemiesArray[i].flipX = false;
+  //
+  //   enemiesArray[i].x += enemiesArray[i].speed;
+  //
+  //   if (enemiesArray[i].x >= this.cameras.main.width){
+  //     enemiesArray[i].speed *= -1;
+  //   }
+  //   else if (enemiesArray[i].x <= 0){
+  //     enemiesArray[i].speed *= -1;
+  //   }
+  // }
+
 }
 
 function collisionHandler(drew, enemy){
-  if (hitting){
+  if (drew.hitting)
+  {
     enemy.anims.play('cw_hurt', true);
-  } else {
-    drew.setVelocityY(JUMP/2);
+    this.graphics.moveTo(enemy.x, enemy.y);
+    this.graphics.lineStyle(1, 0x000000, 1.0);
+    this.graphics.beginPath();
+    this.graphics.arc()
   }
+  // else {
+  //   drew.receiveDamage();
+  // }
 }
