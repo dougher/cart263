@@ -2,7 +2,7 @@ let Drew = new Phaser.Class({
   Extends: Phaser.Physics.Arcade.Sprite,
 
   initialize:
-  function Drew(scene, x, y, key, _graphics){
+  function Drew(scene, x, y, key, game){
     Phaser.Physics.Arcade.Sprite.call(this, scene, x, y, key);
 
     this.SPEED = 300;
@@ -14,7 +14,8 @@ let Drew = new Phaser.Class({
     this.combos = 0; // The combos accumulated by button mashing the hitButton.
     this.currentCombo = 0; // This int allows us to choose the right current animation in the combo sequence.
 
-    this.graphics = _graphics;
+    this.gameRef = game;
+    this.graphics = game.graphics;
     this.depth = 2;
   },
 
@@ -87,15 +88,15 @@ let Drew = new Phaser.Class({
         case "hit1":
           this.combos--;
           this.currentCombo = this.combos;
-          if (this.combos === 0)
-            this.hitting = false;
           break;
         case "hit2":
           this.combos--;
           this.currentCombo = this.combos;
-          if (this.combos === 0)
-            this.hitting = false;
           break;
+      }
+      if (this.combos === 0){
+        this.hitting = false;
+        this.drawing = false;
       }
     }, this);
 
@@ -163,6 +164,7 @@ let Drew = new Phaser.Class({
 
   receiveDamage: function(){
     this.setVelocityY(this.JUMP/2);
+    this.setTintFill(0xffffff);
   },
 
   collisionHandler: function(enemy){
@@ -172,15 +174,23 @@ let Drew = new Phaser.Class({
       this.drawing = true;
       console.log("Enemy X: " + enemy.x + " // Enemy Y: " + enemy.y);
       enemy.anims.play('cw_hurt', true);
-      this.graphics.beginPath();
-      this.graphics.lineStyle(1, 0x000000);
-      this.graphics.arc(enemy.x - SPRITE_WIDTH/2, enemy.y, , Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(this.getRandomDegree()), true);
-      this.graphics.closePath();
-      this.graphics.strokePath();
+      enemy.health--;
+      // this.graphics.beginPath();
+      //this.graphics.lineStyle(1, 0x000000);
+      let currentDegree = this.getRandomDegree();
+      let currentRadius = this.currentRadius();
+      // this.graphics.arc(enemy.x - SPRITE_WIDTH, enemy.y, currentRadius, 0, Phaser.Math.DegToRad(currentDegree), true);
+      // this.graphics.strokePath();
+      // this.graphics.closePath();
+
+      let paintX = (enemy.x - SPRITE_WIDTH) + Math.cos(this.getDegreeBetween(currentDegree)) * currentRadius;
+      let paintY = (enemy.y - SPRITE_HEIGHT) + Math.sin(this.getDegreeBetween(currentDegree)) * currentRadius;
+      let paint = this.gameRef.add.sprite(paintX, paintY, 'paint');
+      paint.angle = 315;
+      paint.anims.play('paint_splash');
+    } else {
+      drew.receiveDamage();
     }
-    // else {
-    //   drew.receiveDamage();
-    // }
 
   },
 
@@ -195,6 +205,10 @@ let Drew = new Phaser.Class({
 
   getRandomDegree: function(){
     return Math.ceil(Math.random()) * 360 + 270;
+  },
+
+  getDegreeBetween: function(max){
+    return Math.ceil(Math.random() * max);
   }
 
 

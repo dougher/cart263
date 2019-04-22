@@ -78,9 +78,10 @@ function create() {
   platforms.create(50, 250, 'ground');
   platforms.create(750, 220, 'ground');
 
-  //
+  this.graphics = this.add.graphics();
+  this.graphics.depth = 2;
   // We create Drew has his own Phaser class (extending Physics.Arcade.Sprite)
-  drew = new Drew(this, 100, 450, 'idle');
+  drew = new Drew(this, 100, 450, 'idle', this.graphics);
 
   this.physics.add.existing(drew);
   this.add.existing(drew);
@@ -135,9 +136,6 @@ function create() {
   this.physics.add.collider(drew, platforms);
   this.physics.add.collider(enemies, platforms);
   this.physics.add.overlap(drew, enemies, collisionHandler, null, this);
-
-  this.graphics = this.add.graphics();
-  this.graphics.depth = 1;
 }
 
 function update() {
@@ -167,15 +165,5 @@ function update() {
 }
 
 function collisionHandler(drew, enemy){
-  if (drew.hitting)
-  {
-    enemy.anims.play('cw_hurt', true);
-    this.graphics.moveTo(enemy.x, enemy.y);
-    this.graphics.lineStyle(1, 0x000000, 1.0);
-    this.graphics.beginPath();
-    this.graphics.arc()
-  }
-  // else {
-  //   drew.receiveDamage();
-  // }
+  drew.collisionHandler(enemy, )
 }
